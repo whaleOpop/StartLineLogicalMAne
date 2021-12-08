@@ -1,0 +1,92 @@
+﻿Build started 10.08.2016 19:16:27.
+     1>Project "C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\MyTrackingCamTest.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Release\MyTrackingCamTest.unsuccessfulbuild".
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\Release\MyTrackingCamTest.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Program Files\IntelTBB\lib\ia32\vc10" tbb.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\MyTrackingCamTest.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\Release\MyTrackingCamTest.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\Release\MyTrackingCamTest.lib" /MACHINE:X86 Release\MyBlobThing.obj
+         Release\MyBlobThingAng.obj
+         Release\MyBlobThingHost.obj
+         Release\MyBlobThingPacker.obj
+         Release\MyBlobThingSet.obj
+         Release\MyBlobThingSorter.obj
+         Release\MyBlobThingUsbApi.obj
+         Release\MyBlobCam.obj
+         Release\MyBlobDetector.obj
+         Release\MyBlobDetectorAPI.obj
+         Release\MyBlobHost.obj
+         Release\MyBlobPrimitivesHost.obj
+         Release\MyBlobTracking.obj
+         Release\MyBlobTuner.obj
+         Release\MyBlobUsbApi.obj
+         Release\MyCamScsi.obj
+         Release\MyCamScsiAPI.obj
+         Release\MyCamScsiBuffer.obj
+         Release\MyCamScsiGetch.obj
+         Release\MyCamScsiReader.obj
+         Release\MyCamScsiUsbDriver.obj
+         Release\MyLibUsbScsiLayer.obj
+         Release\MySCamScsi.obj
+         Release\MyGui.obj
+         Release\MyGuiAutoDecorator.obj
+         Release\MyGuiLabel.obj
+         Release\MyGuiLever.obj
+         Release\MyGuiLightButton.obj
+         Release\MyGuiPanel.obj
+         Release\MyGuiShaft.obj
+         Release\MyGuiSpinBox.obj
+         Release\MyGuiTrackbar.obj
+         Release\MyGuiVal.obj
+         Release\MyTrackingCamGUI.obj
+         Release\MyTrackingCamGUI_Detector.obj
+         Release\MyTrackingCamGUI_Link.obj
+         Release\MyTrackingCamGUI_NoCamDialog.obj
+         Release\MyTrackingCamGUI_Node.obj
+         Release\MyTrackingCamGUI_Object.obj
+         Release\MyTrackingCamGUI_Output.obj
+         Release\MyTrackingCamGUI_SaveLoad.obj
+         Release\MyTrackingCamGUI_Setup.obj
+         Release\MyTrackingCamGUI_Sync.obj
+         Release\MyCamEmulator.obj
+         Release\MyCamSerializer.obj
+         Release\MyDxlPacketManager.obj
+         Release\MyPdt.obj
+         Release\MySubImg.obj
+         Release\MyTrackingCam.obj
+         Release\MyTrackingCamDxl.obj
+         Release\MyTrackingCamHAL.obj
+         Release\MyTrackingCamIO.obj
+         Release\MyTrackingCamPacker.obj
+         Release\MyTrackingCamPdt.obj
+         Release\MyTrackingCamUsbApi.obj
+         Release\MyTrackingCamTest.obj
+         Release\MyTrackingCamTestRoutine.obj
+         Release\stdafx.obj
+         "C:\Program Files\OpenCV2.1\lib\cv210.lib"
+         "C:\Program Files\OpenCV2.1\lib\cv210d.lib"
+         "C:\Program Files\OpenCV2.1\lib\cvaux210.lib"
+         "C:\Program Files\OpenCV2.1\lib\cvaux210d.lib"
+         "C:\Program Files\OpenCV2.1\lib\cxcore210.lib"
+         "C:\Program Files\OpenCV2.1\lib\cxcore210d.lib"
+         "C:\Program Files\OpenCV2.1\lib\cxts210.lib"
+         "C:\Program Files\OpenCV2.1\lib\highgui210.lib"
+         "C:\Program Files\OpenCV2.1\lib\highgui210d.lib"
+         "C:\Program Files\OpenCV2.1\lib\ml210.lib"
+         "C:\Program Files\OpenCV2.1\lib\ml210d.lib"
+         "C:\Program Files\OpenCV2.1\lib\opencv_ffmpeg210.lib"
+         "C:\Program Files\OpenCV2.1\lib\opencv_ffmpeg210d.lib"
+         "libusb-1.0.lib"
+         Generating code
+         Finished generating code
+         MyTrackingCamTest.vcxproj -> C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\Release\MyTrackingCamTest.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\Release\MyTrackingCamTest.exe;#1" /manifest Release\MyTrackingCamTest.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\MyTrackingCamTest.unsuccessfulbuild".
+         Touching "Release\MyTrackingCamTest.lastbuildstate".
+     1>Done Building Project "C:\Users\Егор\Documents\Robot\MyTrackingCam_Host\MyTrackingCamTest\MyTrackingCamTest.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.54
