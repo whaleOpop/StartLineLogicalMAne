@@ -5,6 +5,8 @@
 #define ena 2
 #define enb 3
 #define d A15
+#define c A14 //скорость движка
+#define a A13 //скорость движка  
 int m1Speed;
 int m2Speed;
 float D;
@@ -56,12 +58,13 @@ void dvig(){
 }
 
 void testdvig(){
-  digitalWrite(in1, HIGH);
- digitalWrite(in2,LOW);
+  digitalWrite(in1,LOW );
+ digitalWrite(in2,HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4,LOW);
-  analogWrite(ena, 170); //Управление скоростью моторов с помощью широтно импульсной модуляции
-  analogWrite(enb, 255);
+
+  //analogWrite(ena, (int)); //Управление скоростью моторов с помощью широтно импульсной модуляции
+ // analogWrite(enb, (int)analogRead(a));
    
 }
 
@@ -94,7 +97,10 @@ void setup() {
 
 
 void loop() {
-   Serial.println(analogRead(d));
+  //Serial.println(analogRead(d));
+  //Serial.println(analogRead(c));
+  //Serial.println(analogRead(a));
+  
 //pid();//вызов ф-ции пид реглятора
 //dvig();//вызов движков (передаём значение пида)
 //vivod();
