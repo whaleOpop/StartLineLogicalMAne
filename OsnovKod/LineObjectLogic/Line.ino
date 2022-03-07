@@ -54,7 +54,7 @@ public:
 
 
 
-  void onMinLine()
+  int onMinLine()
   {
 
     for (int i = 0; i < 8; i++)
@@ -68,12 +68,13 @@ public:
     {
       linelast[i] = line[i];
     }
+    return linemin[8];
   }
 
 
 
 
-  void onMaxLine()
+  int onMaxLine()
   {
     for (int i = 0; i < 8; i++)
     {
@@ -82,6 +83,7 @@ public:
         linemax[i] = line[i];
       }
     }
+    return linemax[8];
   }
 
 
