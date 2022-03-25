@@ -12,8 +12,8 @@
 class LinerObj {
   private:
     int linemax[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-    int line[8] = {map(analogRead(A0), 0, 1024, 0, 255)
-                   , map(analogRead(A1), 0, 1024, 0, 255),
+    int line[8] = {map(analogRead(A0), 0, 1024, 0, 255),
+                   map(analogRead(A1), 0, 1024, 0, 255),
                    map(analogRead(A2), 0, 1024, 0, 255),
                    map(analogRead(A3), 0, 1024, 0, 255),
                    map(analogRead(A4), 0, 1024, 0, 255),

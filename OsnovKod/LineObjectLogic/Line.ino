@@ -1,3 +1,10 @@
+#define ena 2
+#define enb 3
+#define in1 40
+#define in2 41
+#define in3 42
+#define in4 43
+
 #define L4 A0
 #define L3 A1
 #define L2 A2
@@ -6,42 +13,57 @@
 #define R2 A5
 #define R3 A6
 #define R4 A7
-
+#define minim 31
 class Line_pos
 {
 private:
-  int line[8];
-  int blackWhite;
+  int size;
+  int *line;
+  int *minline;
+  int *maxline;
 
 public:
-  float robot_10pos()
+  int robotFlag()
   {
-    int posSum = 0;
-    int posMedian = 0;
-    int signal_corrected;
-    for (int i = 0; i < 8; i++)
-    {
-      if (line[i] > blackWhite)
-      {
-        signal_corrected = 1;
-      }
-      else
-      {
-        signal_corrected = 0;
-      }
-      posSum += signal_corrected;
-      posMedian += signal_corrected;
-    }
-    return posMedian / posSum - 7;
+    int pos = 0;
+    if (line[0] >= 3 && line[0] < 600)
+      pos = -2;
+    if (line[1] >= 3 && line[1] < 600)
+      pos = -1;
+    if (line[2] >= 3 && line[2] < 600)
+      pos = 0;
+    if (line[3] >= 3 && line[3] < 600)
+      pos = 1;
+    if (line[4] >= 3 && line[4] < 600)
+      pos = 2;
+
+    return pos;
   }
-  void setLine(int line_data[8], int blackWhite_data)
+  int getMin()
   {
-    line[8] = line_data[8];
-    blackWhite = blackWhite_data;
+  }
+  int getMax()
+  {
+  }
+  void getLine()
+  {
+    for (int i = 0; i < 5; i++)
+    {
+      Serial.print(line[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+  void setLine(int &line_data, int data_size, int &minline_data, int &maxline_data)
+  {
+    size = data_size;
+    minline = &minline_data;
+    maxline = &maxline_data;
+    line = &line_data;
   }
   void getPos()
   {
-    Serial.println(robot_10pos());
+    Serial.println(robotFlag());
   }
 };
 
@@ -59,29 +81,30 @@ private:
   int error;
   Line_pos pos;
   int err_p = -1;
-  int prevErr = pos.robot_10pos();
+  int prevErr = pos.robotFlag();
   ;
   int err_arr[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 public:
-  void setLine(int kp_data, int ki_data, int kd_data, int speed_data)
+  void setLine(int kp_data, int ki_data, int kd_data, int errod_data)
   {
-    kp = kp_data;//10
-    kd = kd_data;//5
-    ki = ki_data;//5
-    speed = speed_data;
+    kp = kp_data; // 10
+    kd = kd_data; // 5
+    ki = ki_data; // 5
+    error = errod_data;
   }
-  int PDs()
+
+  float PDs()
   {
 
-    error = pos.robot_10pos();
-    PD=kp*error+kd*(error-prevErr);
+    error = pos.robotFlag();
+    PD = kp * error + kd * (error - prevErr);
     prevErr = error;
     return PD;
   }
   int PIDoras()
   {
-    error = pos.robot_10pos();
+
     err_p = (err_p + 1) % 10;
     err_arr[err_p] = error;
     P = error * kp;
@@ -91,6 +114,7 @@ public:
       err_sum += err_arr[i];
     I = err_sum / 10 * ki;
     prevErr = error;
+
     return P + I + D;
   }
 };
@@ -107,39 +131,31 @@ void setup()
   pinMode(R3, INPUT);
   pinMode(R4, INPUT);
 }
-// int lastline[8];
-// int maxline[8] = {8, 8, 8, 8, 8, 7, 7, 10};
-// int minline[8];
+int minline[8];
+int maxline[8];
+Line_pos pos;
+PID pid;
+
+void motorSeT(int lmotor, int rmotor,int pid)
+{
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(ena, (lmotor-pid));
+  analogWrite(enb, (rmotor+pid));
+}
+
 void loop()
 {
-  Line_pos pos;
+  int size;
 
-  int line[8] = {map(analogRead(A0), 0, 1023, 0, 255),
-                 map(analogRead(A1), 0, 1023, 0, 255),
-                 map(analogRead(A2), 0, 1023, 0, 255),
-                 map(analogRead(A3), 0, 1023, 0, 255),
-                 map(analogRead(A4), 0, 1023, 0, 255),
-                 map(analogRead(A5), 0, 1023, 0, 255),
-                 map(analogRead(A6), 0, 1023, 0, 255),
-                 map(analogRead(A7), 0, 1023, 0, 255)};
+  int line[5] = {analogRead(A0), analogRead(A1), analogRead(A2), analogRead(A3), analogRead(A4)};
 
-
-
-  // for (int i = 0; i < 8; i++)
-  // {
-  //   Serial.print(" ");
-  //   Serial.print(line[i]);
-  // }
-  // Serial.println("Vivod");
-  // for (int i = 0; i < 8; i++)
-  // {
-  //   maxline[i] = max(maxline[i], line[i]);
-  // }
-  // for (int i = 0; i < 8; i++)
-  // {
-  //   Serial.print(" ");
-  //   Serial.print(maxline[i]);
-  // }
-  // Serial.println("Msx");
-  // lastline[8] = line[8];
+  pos.setLine(*line, 5, *minline, *maxline);
+  pos.getPos();
+  pid.setLine(50, 0, 0, pos.robotFlag());
+  Serial.print("PID ");
+  Serial.println(pid.PIDoras());
+  motorSeT(120, 120,pid.PIDoras());
 }

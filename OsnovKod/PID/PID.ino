@@ -13,8 +13,7 @@ float err;
 float PD;
 float kp = 10;
 float kd = 5;
-#include <Wire.h>//библеотеки датчика линии
-#include <Octoliner.h>//библеотеки датчика линии
+
 Octoliner octoliner(42); //реализация класса датчиков
 int dataSensors[8];//массмв датчик
 
