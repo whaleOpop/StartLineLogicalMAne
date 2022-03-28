@@ -140,7 +140,6 @@ void motorSeTL(int lmotor, int pid)
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   analogWrite(ena, (lmotor - pid));
-  
 }
 //Правый мотор Ф-ция пида для левого колеса
 void motorSeTR(int rmotor, int pid)
@@ -178,14 +177,14 @@ void loop()
   pos.setLine(*line, 5);
   pos.getPos();
   //правое колесо пид
-  pidr.setLine(50, 0, 0, pos.robotFlag());
+  pidr.setLine(40, 0, 0, pos.robotFlag());
   //левое  колесо пид
-  pidl.setLine(50, 0, 0, pos.robotFlag());
+  pidl.setLine(60, 0, 0, pos.robotFlag());
   Serial.println(pos.robotFlag());
   // Serial.print("PID ");
   // Serial.println(pid.PIDoras());
-    motorSeTL(150, pidr.PIDoras());
+  motorSeTL(178, pidl.PIDoras());
 
-    motorSeTR(150, pidr.PIDoras());
+  motorSeTR(178, pidr.PIDoras());
   // motorTest(1500,155);
 }
