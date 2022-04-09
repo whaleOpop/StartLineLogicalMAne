@@ -157,7 +157,7 @@ void motorSeT(int rmotor, int lmotor, int pidl, int pidr)
   {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
-    speedl=speedl + 30;
+    speedl=speedl;
     analogWrite(ena, (speedl)); //
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
@@ -195,17 +195,20 @@ void loop()
   pos.setLine(*line, 5);
   pos.getPos();
   //правое колесо пид
-  pidr.setLine(50, 0, 0, pos.robotFlag()); // 35
+  pidr.setLine(40, 0, 0, pos.robotFlag()); // 35
   //левое  колесо пид
-  pidl.setLine(50, 0, 0, pos.robotFlag()); // 35
+  pidl.setLine(40, 0, 0, pos.robotFlag()); // 35
 
   // Serial.print("PID ");
-  // Serial.println(pid.PIDoras());
-
-  motorSeT(150, 150, pidl.PIDoras(), pidr.PIDoras());
+  Serial.println(pidr.PIDoras());
+  int time_counterstop;
+  if(millis()-time_counterstop>250){
+    time_counterstop=millis();
+  } 
+  motorSeT(160, 160, pidl.PIDoras(), pidr.PIDoras());
   Serial.print("Left  ");
   Serial.println( 150 + pidr.PIDoras());
   Serial.print("Righy ");
   Serial.println(150 - pidr.PIDoras());
-  // motorTest(1500,155);
+  //motorTest(100,100);
 }
