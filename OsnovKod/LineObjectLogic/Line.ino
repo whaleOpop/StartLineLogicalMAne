@@ -157,24 +157,15 @@ void motorSeT(int rmotor, int lmotor, int pidl, int pidr)
   {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
-    speedl=speedl;
-    analogWrite(ena, (speedl)); //
+    speedl = speedl;
+    analogWrite(ena, (speedl));
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
     analogWrite(enb, (speedr));
   }
-  
 }
 //Левый мотор, Правый мотор
-void motorTest(int lmotor, int rmotor)
-{
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  analogWrite(ena, lmotor);
-  analogWrite(enb, rmotor);
-}
+
 void motorStop()
 {
   digitalWrite(in1, LOW);
@@ -185,6 +176,9 @@ void motorStop()
   analogWrite(enb, 0);
 }
 
+unsigned long time_counterstop;
+unsigned long time_counterleft;
+unsigned long time_counterright;
 void loop()
 {
 
@@ -195,20 +189,40 @@ void loop()
   pos.setLine(*line, 5);
   pos.getPos();
   //правое колесо пид
-  pidr.setLine(40, 0, 0, pos.robotFlag()); // 35
+  pidr.setLine(40, 5, 1, pos.robotFlag()); // 35
   //левое  колесо пид
-  pidl.setLine(40, 0, 0, pos.robotFlag()); // 35
+  pidl.setLine(40, 5, 1, pos.robotFlag()); // 35
 
   // Serial.print("PID ");
-  Serial.println(pidr.PIDoras());
-  int time_counterstop;
-  if(millis()-time_counterstop>250){
-    time_counterstop=millis();
-  } 
-  motorSeT(160, 160, pidl.PIDoras(), pidr.PIDoras());
-  Serial.print("Left  ");
-  Serial.println( 150 + pidr.PIDoras());
-  Serial.print("Righy ");
-  Serial.println(150 - pidr.PIDoras());
-  //motorTest(100,100);
+  if ((line[4] >= 3 && line[4] < 600) && (line[3] >= 3 && line[3] < 600) || (line[2] >= 3 && line[2] < 600))
+  {
+    Serial.println("square left");
+
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(ena, 150);
+    analogWrite(enb, 150);
+  }
+  else if ((line[0] >= 3 && line[0] < 600) && (line[1] >= 3 && line[1] < 600) || (line[2] >= 3 && line[2] < 600))
+  {
+    Serial.println("square right");
+
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 150);
+    analogWrite(enb, 150);
+  }
+  else
+  {
+    if (millis() - time_counterstop > 50)
+    {
+      time_counterstop = millis();
+      motorSeT(140, 140, pidl.PIDoras(), pidr.PIDoras());
+      Serial.println("Sanya lox");
+    }
+  }
 }
