@@ -5,10 +5,16 @@
 #define in3 42
 #define in4 43
 
-#define STATE_FORWARD 0
-#define STATE_RIGHT 1
-#define STATE_LEFT 2
-int state = STATE_FORWARD;
+#define L4 A0
+#define L3 A1
+#define L2 A2
+#define L1 A3
+#define R1 A4
+#define R2 A5
+#define R3 A6
+#define R4 A7
+#define minim 31
+
 class Line_pos
 {
 private:
@@ -110,6 +116,14 @@ public:
 void setup()
 {
   Serial.begin(9600);
+  pinMode(L4, INPUT);
+  pinMode(L3, INPUT);
+  pinMode(L2, INPUT);
+  pinMode(L1, INPUT);
+  pinMode(R1, INPUT);
+  pinMode(R2, INPUT);
+  pinMode(R3, INPUT);
+  pinMode(R4, INPUT);
 }
 
 int minline[8];
@@ -175,69 +189,120 @@ void loop()
   pos.setLine(*line, 5);
   //выводим ошибку
   pos.getPos();
-
+  pos.getLine();
   //правое колесо пид
-  pidr.setLine(35, 0, 0, pos.robotFlag()); // 35
+  pidr.setLine(40, 0, 0, pos.robotFlag()); // 35
   //левое  колесо пид
-  pidl.setLine(35, 0, 0, pos.robotFlag()); // 35
+  pidl.setLine(40, 0, 0, pos.robotFlag()); // 35
 
   //Уловие проезда волнистой и квадратной линии
-  // 11000
-
-  //Включаем моторы и передаём значение пид-регулятора
-
-  boolean left = !digitalRead(A0);
-  boolean right = !digitalRead(A4);
-
-  int targetState;
-
-  if (left == right)
+  // 00011
+  String flag;
+  if ((line[0] >= 3 && line[0] < 600) && (line[1] >= 3 && line[1] < 600))
   {
-    // под сенсорами всё белое или всё чёрное
-    // едем вперёд
-    targetState = STATE_FORWARD;
+    flag = "right";
+    Serial.println("square right");
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
   }
-  else if (left)
+  // 11000
+  else if ((line[4] >= 3 && line[4] < 600) && (line[3] >= 3 && line[3] < 600))
   {
-    // левый сенсор упёрся в трек
-    // поворачиваем налево
-    targetState = STATE_LEFT;
+    flag = "left";
+    Serial.println("square left");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+  else if ((line[3] >= 3 && line[3] < 600) && (line[2] >= 3 && line[2] < 600))
+  {
+    flag = "left";
+    Serial.println("square left");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+  else if ((line[1] >= 3 && line[1] < 600) && (line[2] >= 3 && line[2] < 600))
+  {
+    flag = "right";
+    Serial.println("square right");
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+  else if ((line[0] >= 3 && line[0] < 600) && (line[1] >= 3 && line[1] < 600) && (line[2] >= 3 && line[2] < 600))
+  {
+    flag = "left";
+    Serial.println("square left");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+  else if ((line[4] >= 3 && line[4] < 600) && (line[3] >= 3 && line[3] < 600) && (line[2] >= 3 && line[2] < 600))
+  {
+    flag = "right";
+    Serial.println("square right");
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+
+  else if ((line[0] >= 3 && line[0] < 600) && (line[1] >= 3 && line[1] < 600) && (line[2] >= 3 && line[2] < 600) && (line[3] >= 3 && line[3] < 600))
+  {
+    flag = "left";
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+
+  else if ((line[1] >= 3 && line[1] < 600) && (line[2] >= 3 && line[2] < 600) && (line[3] >= 3 && line[3] < 600) && (line[4] >= 3 && line[4] < 600))
+  {
+    flag = "right";
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+  }
+  else if (!(line[0] >= 3 && line[0] < 600) && !(line[1] >= 3 && line[1] < 600) && !(line[2] >= 3 && line[2] < 600) && !(line[3] >= 3 && line[3] < 600) && !(line[4] >= 3 && line[4] < 600))
+  {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(ena, 200);
+    analogWrite(enb, 200);
+    Serial.println("BAN");
+ 
   }
   else
   {
-    targetState = STATE_RIGHT;
-  }
 
-  // if (state == STATE_FORWARD && targetState != STATE_FORWARD)
-  // {
-  //   int brakeTime = (currentSpeed > SLOW_SPEED) ? currentSpeed : 0;
-  //   stepBack(brakeTime, targetState);
-  // }
-
-  switch (targetState)
-  {
-  case STATE_FORWARD:
-    motorSeT(140, 140, pidl.PIDoras(), pidr.PIDoras());
+    //Включаем моторы и передаём значение пид-регулятора
+    motorSeT(150, 150, pidl.PIDoras(), pidr.PIDoras());
     Serial.println("Sanya lox");
-    break;
-
-  case STATE_RIGHT:
-
-    digitalWrite(in1, LOW);
-    digitalWrite(in2, HIGH);
-    analogWrite(ena, (255));
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
-    analogWrite(enb, (255));
-    break;
-
-  case STATE_LEFT:
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
-    analogWrite(ena, 255);
-    digitalWrite(in3, LOW);
-    digitalWrite(in4, HIGH);
-    analogWrite(enb, (255));
-    break;
   }
 }
