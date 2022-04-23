@@ -1,13 +1,20 @@
+#include "TrackingCamDxlUart.h"
+
+TrackingCamDxlUart trackingCam;
+unsigned long previousMillis = 0;
+
 #define ena 2
 #define enb 3
 #define in1 40
 #define in2 41
 #define in3 42
 #define in4 43
-
 #define STATE_FORWARD 0
 #define STATE_RIGHT 1
 #define STATE_LEFT 2
+#define STATE_2BACKGR 3
+#define STATE_1LEFTGR 4
+#define STATE_1RIGHTGR 5
 int state = STATE_FORWARD;
 class Line_pos
 {
@@ -109,7 +116,8 @@ public:
 
 void setup()
 {
-  Serial.begin(9600);
+  trackingCam.init(52, 1, 115200, 30);
+  Serial.begin(115200);
 }
 
 int minline[8];
@@ -169,12 +177,14 @@ unsigned long time_counterleft;
 unsigned long time_counterright;
 void loop()
 {
+  uint8_t n = trackingCam.readBlobs(2);
+
   // объедениям линии в массив
   int line[5] = {analogRead(A0), analogRead(A1), analogRead(A2), analogRead(A3), analogRead(A4)};
   //передаём линию и размер
   pos.setLine(*line, 5);
   //выводим ошибку
-  pos.getPos();
+  // pos.getPos();
 
   //правое колесо пид
   pidr.setLine(35, 0, 0, pos.robotFlag()); // 35
@@ -190,8 +200,29 @@ void loop()
   boolean right = !digitalRead(A4);
 
   int targetState;
+  if (n != 0)
+  {
+    for (int i = 0; i < n; i++)
+    {
+      if (n == 2)
+      {
+        targetState = STATE_2BACKGR;
+      }
+      else if (n = 1)
+      {
+        if (trackingCam.blob[i].cx >= 100 && trackingCam.blob[i].cx <= 140)
+        {
+          targetState = STATE_1RIGHTGR;
+        }
 
-  if (left == right)
+        else
+        {
+          targetState = STATE_1LEFTGR;
+        }
+      }
+    }
+  }
+  else if (left == right)
   {
     // под сенсорами всё белое или всё чёрное
     // едем вперёд
@@ -216,11 +247,12 @@ void loop()
 
   switch (targetState)
   {
+    //Включение пид регулятора
   case STATE_FORWARD:
     motorSeT(140, 140, pidl.PIDoras(), pidr.PIDoras());
-    Serial.println("Sanya lox");
+     Serial.println("STATE_FORWARD");
     break;
-
+    //поворот на право
   case STATE_RIGHT:
 
     digitalWrite(in1, LOW);
@@ -228,9 +260,10 @@ void loop()
     analogWrite(ena, (255));
     digitalWrite(in3, HIGH);
     digitalWrite(in4, LOW);
-    analogWrite(enb, (255));
+    analogWrite(enb, (200));
+    Serial.println("STATE_RIGHT");
     break;
-
+    //поворот на лево
   case STATE_LEFT:
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
@@ -238,6 +271,51 @@ void loop()
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
     analogWrite(enb, (255));
+    Serial.println("STATE_LEFT");
+    break;
+    //поворот на зелёном левом
+  case STATE_1LEFTGR:
+    if (millis() - time_counterleft > 300)
+    {
+      time_counterleft = millis();
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(ena, 255);
+      digitalWrite(in3, LOW);
+      digitalWrite(in4, HIGH);
+      analogWrite(enb, (255));
+      Serial.println("STATE_1LEFTGR");
+    }
+    break;
+    //поворот на зелёном правом
+  case STATE_1RIGHTGR:
+    if (millis() - time_counterright > 300)
+    {
+      time_counterright = millis();
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+      analogWrite(ena, (255));
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
+      analogWrite(enb, (200));
+    }
+    Serial.println("STATE_1RIGHTGR");
+    break;
+  case STATE_2BACKGR:
+    if (millis() - time_counterstop > 600)
+    {
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+      analogWrite(ena, (255));
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
+      analogWrite(enb, (255));
+    }
+    Serial.println("STATE_2BACKGR");
     break;
   }
+  while (millis() - previousMillis < 33)
+  {
+  };
+  previousMillis = millis();
 }
